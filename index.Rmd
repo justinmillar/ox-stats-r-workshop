@@ -6,12 +6,17 @@ date: '30 January 2020'
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, hygge, ninjutsu, xaringan-themer.css]
+    css: [default, hygge, ninjutsu, footer.css, xaringan-themer.css]
     nature:
       highlightStyle: tomorrow-night-eighties
       highlightLines: true
       countIncrementalSlides: false
       ratio: 16:9
+---
+
+layout: true
+<div class="my-footer"><span>https://justinmillar.github.io/ox-stats-r-workshop/</span></div>
+
 ---
 
 ```{r setup, include=FALSE}
