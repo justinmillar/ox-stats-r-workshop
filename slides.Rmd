@@ -1,0 +1,318 @@
+---
+title: "Data Wrangling and Visualisation in R"
+subtitle: "Oxford IT Services"  
+author: "<br> <br>"
+date: '30 January 2020'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, hygge, ninjutsu, xaringan-themer.css]
+    nature:
+      highlightStyle: tomorrow-night-eighties
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.width = 6, message = FALSE, warning = FALSE, comment = "", cache = FALSE, fig.retina = 3)
+library(fontawesome)
+library(tidyverse)
+spotify <- read_csv("spotify-data.csv")
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+# solarized_dark(
+#   code_font_family = "Fira Code",
+#   code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+# )
+
+mono_light(
+  base_color = "#1D2C4F",
+  header_font_google = google_font("Nunito", "600"),
+  text_font_google   = google_font("Roboto", "300", "300i"),
+  link_color = "#00529b", 
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css" 
+)
+```
+
+# Getting Started
+
+Have a (relatively recent) version of R and RStudio installed:
+
+- [Download R](https://www.r-project.org/)
+- [Download RStudio](https://rstudio.com/products/rstudio/download/)
+
+If you do not have `library(tidyverse)` installed, run the following:
+
+```{r, install-tidyverse, eval=FALSE}
+"tidyverse" %in% rownames(installed.packages())  
+install.packages("tidyverse")
+```
+
+Follow slides at
+
+---
+
+class: center
+
+# Introduction
+
+.pull-left[
+<img class="circle" src="https://pbs.twimg.com/profile_images/1004462306820943872/XoWEuYZd_400x400.jpg" width="150px"/>
+
+## Justin Millar
+
+[`r fa(name = "twitter")` @justinjmillar](http://twitter.com/justinjmillar)  
+[`r fa(name = "paper-plane")` justin.millar@bdi.ox.ac.uk](mailto:justin.millar@bdi.ox.ac.uk)
+]
+
+.pull-right[
+<img class="circle" src="https://pbs.twimg.com/profile_images/903924164150652929/D9Uv-6Q5_400x400.jpg" width="150px"/>
+
+## Andre Python
+
+[`r fa(name = "twitter")` @andrepython](http://twitter.com/https://twitter.com/andrepython)  
+]
+
+---
+
+class: center, middle
+
+# RStudio
+
+![](https://bookdown.org/ndphillips/YaRrr/images/RStudio_Screenshot_Labels.png)
+
+---
+
+# R Projects
+
+RStudio projects keep all files used in an analysis (data files, R scripts, results, figures) in a single place
+
+A new folder will be created on your computer
+
+No longer need `setwd()`!
+
+Easy to share across computers:
+  - Email folder or .zip
+  - Use version control like Git
+
+---
+
+class: center, middle
+
+<iframe src='https://gfycat.com/ifr/ImpureTerrificAllensbigearedbat' frameborder='0' hd='1' scrolling='no' allowfullscreen width='640' height='540'></iframe>
+
+
+---
+
+background-image: url(https://www.tidyverse.org/images/tidyverse-default.png)
+background-position: 50% 50%
+class: center, bottom, inverse
+
+---
+
+# Tidyverse
+
+.pull-left[
+
+The "[`tidyverse`](https://www.tidyverse.org/)" is a collection of R packages that are specifically designed for data science, sharing a common design philosophy and grammar.
+
+These packages assume/enforce the use of ["tidy" data](https://vita.had.co.nz/papers/tidy-data.pdf):
+* Each variable must have it's own column
+* Each observation must have it's own row
+* Each value must have it's own cell
+
+
+.center[
+
+<br>
+<a href="https://github.com/rfordatascience/tidytuesday">
+<img src="https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/static/tt_logo.png" style="height:150px;">
+</a>
+]
+
+
+]
+
+.pull-right[
+.center[
+<img src="http://www.seec.uct.ac.za/sites/default/files/image_tool/images/330/tidy_workflow.png"  style="height:350px;">
+]
+]
+
+---
+
+# Load `tidyverse` and download data
+
+Once you have created your new R Project, start a new script and load the `tidyverse` library:
+
+```{r load-tidyverse, message=FALSE}
+library(tidyverse)
+```
+
+For this workshop we will use a recent Tidy Tuesday dataset on from Spotify playlist.  and download the data into your project folder:
+
+```{r download-data, eval=FALSE}
+# Download data file into project
+download.file(
+  url = "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv",
+  destfile = "spotify-data.csv")
+```
+
+You should now see `"spotify-data.csv"` in your project folder.
+
+---
+
+# Loading data
+
+
+```{r load-data-example, eval=FALSE}
+spotify <- read_csv("spotify-data.csv")
+head(spotify)
+```
+
+
+
+---
+class: center, middle, inverse
+
+.center[
+<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/dplyr.png"  style="height:550px;">
+]
+
+---
+
+# Data Wrangling with `dplyr`
+
+`dplyr` is the primary `tidyverse` package for data manipulation. 
+Sometimes `dplyr` functions are called "verbs", which can be a helpful way of envision the "wrangling" steps. some common ones are:
+
+`select()` picks columns based on names
+
+`filter()` picks rows based on a condition
+
+`mutate()` adds a new variables that are functions of existing variables
+
+`summarise()` provides summarisations of specific variables (summary statistics)
+
+`group_by()` can be used with `summarise()` to group variables
+
+`distinct()` keep unique values
+
+---
+
+# Using the "pipe" operator: `%>%`
+
+Typically data wrangle will involve multiple steps. Using base R operators this way usually requires saving intermediate objects or overwrite objects, which can be difficult to interpret, prone to typos/bugs, and poor use of memory.
+
+The pipe operator from the `magrittr` package (included in tidyverse), written as `%>%`, allows us to string data cleaning functions together by sending the output from the left-hand side of the pipe into the first argument in the right-hand side.
+
+Since the first argument of `dplyr` (most) functions is *always* our dataframe, this allows us to write code that is more human-readable and more computationally efficent. 
+
+
+.pull-right[![](https://lh3.googleusercontent.com/proxy/TNi9j9Q0_HrzoHtZKUOBke90UFwotJbruwQtv4FDeJXhz8JeuAjdSOUqtvuUXvvI0Nl4438I4g)]
+
+---
+
+```{r flip-setup, echo=FALSE}
+library(flipbookr)
+
+```
+
+
+```{r pipe-dplyr, include = FALSE}
+spotify %>% 
+  select(track_artist, duration_ms) %>% 
+  mutate(duration_s = duration_ms / 1000) %>% 
+  filter(duration_s > 180) %>% 
+  group_by(track_artist) %>% 
+  count() %>% 
+  arrange(desc(n))
+```
+
+`r chunk_reveal("pipe-dplyr", break_type = "auto")`
+
+---
+# Tidying data with `tidyr`
+
+The goal of tidyr is to help you create *tidy data*.
+
+some useful function we'll see are:
+
+.pull-left[
+`separate()` separates one column into multiple
+
+`unite()` combines multiple columns into a single column
+
+]
+
+.pull-right[
+<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/tidyr.png"  style="height:350px;">
+]
+---
+# Data visualization with `ggplot2`
+
+
+.pull-left[
+.center[
+![ggplot](https://pbs.twimg.com/media/EJht4s3W4AQv7hx.jpg)
+]
+
+]
+
+.pull-right[
+.center[
+![a](https://d33wubrfki0l68.cloudfront.net/1e7033393a2c70dc1255c5d0f1c563e945519251/61035/img/evol-ggplot/evol-ggplot-1.gif)
+]
+]
+
+---
+# Data visualization with `ggplot2`
+ GG stands for *Graph of Grammar*
+ 
+ Graphics are built step-by-step by adding new elements called `geom_()`
+ 
+ Usually requires `data` and `mapping`, where `mapping` is defined using the `aes()` function. You provide characteristics here such as `x` and `y` variables.
+ 
+```{r ggplot, eval=FALSE}
+ggplot(data = <DATA>, mapping = aes(<MAPPINGS>)) +  <GEOM_FUNCTION>()
+```
+
+---
+
+```{r pipe-ggplot, include = FALSE}
+spotify %>%
+  separate(col = track_album_release_date, 
+           into = c("year", "month", "day"), 
+           sep = "-") %>% 
+  filter(year >= 1980 & !is.na(year)) %>% 
+  mutate(duration_min = duration_ms/60000) %>%  
+  select(year, duration_min, playlist_genre) %>%
+  ggplot() +
+  aes(x=year, y = duration_min, color = playlist_genre) + 
+  geom_jitter(alpha = 0.3) +
+  labs(x = "Year", y = "Duration in minutes", color = "Genre") +  
+  scale_x_discrete(breaks = seq(1980, 2020, 10)) +
+  scale_color_viridis_d(option = "magma") +
+  theme_bw() +
+  facet_wrap(~playlist_genre) +
+  theme(legend.position = "none")
+```
+
+`r chunk_reveal("pipe-ggplot", break_type = "auto")`
+---
+### From here we are going to begin some live coding
+
+### please open  `notes.R` 
+
+
+---
+# Helpful links
+
+- [Cheatsheets](https://rstudio.com/resources/cheatsheets/): [RStudio IDE](https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf)  |    [dplyr](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)  |   [ggplot](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf)
+- [R for Data Science](https://r4ds.had.co.nz/)
+- [Tidy Tuesday GitHub](https://github.com/rfordatascience/tidytuesday)
