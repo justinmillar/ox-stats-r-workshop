@@ -53,7 +53,7 @@ If you do not have `library(tidyverse)` installed, run the following:
 install.packages("tidyverse")
 ```
 
-Follow slides at https://justinmillar.github.io/ox-stats-r-workshop/
+Follow slides at https://justinmillar.github.io/ox-stats-r-workshop/index.html
 
 Download [**notes**](https://justinmillar.github.io/ox-stats-r-workshop/notes.R) and [**exercises**](https://justinmillar.github.io/ox-stats-r-workshop/exercises.R) scripts.
 
